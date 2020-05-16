@@ -1,65 +1,66 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ticketspartyapp/blocs/home_screen_bloc/home_screen_bloc.dart';
+import 'package:ticketspartyapp/ui/screens/home_screen.dart';
+import 'package:ticketspartyapp/ui/screens/welcome_screen.dart';
 
-void main() {
-  runApp(MyApp());
+import 'blocs/authentication_bloc/bloc.dart';
+import 'ui/screens/splash_screen.dart';
+
+class SimpleBlocDelegate extends BlocDelegate {
+  @override
+  void onEvent(Bloc bloc, Object event) {
+    super.onEvent(bloc, event);
+    print(event);
+  }
+
+  @override
+  void onTransition(Bloc bloc, Transition transition) {
+    super.onTransition(bloc, transition);
+    print(transition);
+  }
+
+  @override
+  void onError(Bloc bloc, Object error, StackTrace stacktrace) {
+    super.onError(bloc, error, stacktrace);
+    print(error);
+  }
 }
 
-class MyApp extends StatelessWidget {
+void main() {
+  BlocSupervisor.delegate = SimpleBlocDelegate();
+  runApp(
+    BlocProvider<AuthenticationBloc>(
+      create: (context) {
+        return AuthenticationBloc()
+          ..add(AppStarted());
+      },
+      child: App(),
+    ),
+  );
+}
+
+class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+      home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+        builder: (context, state) {
+          if (state is AuthenticationUninitialized) {
+            return SplashScreen();
+          }
+          if (state is AuthenticationAuthenticated) {
+            print("Przechodzę do home");
+            return BlocProvider(
+                create: (BuildContext context) => HomeScreenBloc(),
+                child: HomeScreen());
+          }
+          if (state is AuthenticationUnauthenticated) {
+            return WelcomeScreen();
+          }
+          return CircularProgressIndicator();
+        },
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

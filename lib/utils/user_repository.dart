@@ -1,7 +1,8 @@
 import 'dart:convert';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
+import 'package:meta/meta.dart';
 import 'package:ticketspartyapp/constraints.dart';
 import 'package:tuple/tuple.dart';
 
@@ -11,7 +12,7 @@ class UserRepository {
     @required String email,
     @required String password,
   }) async {
-    final uri = Uri.https(serverUrl, "/auth/jwt/create/");
+    final uri = Uri.http(serverUrl, "/auth/jwt/create/");
     var body = json.encode({
       'email': email,
       'password': password,
@@ -41,13 +42,11 @@ class UserRepository {
   static Future<bool> register({
     @required String email,
     @required String password,
-    @required bool isLawyer,
   }) async {
-    final uri = Uri.https(serverUrl, "/auth/users/");
+    final uri = Uri.http(serverUrl, "/auth/users/");
     var body = json.encode({
       'email': email,
-      'password': password,
-      'is_lawyer': true,
+      'password': password
     });
 
     print('Body: $body');
@@ -96,7 +95,7 @@ class UserRepository {
     final storage = new FlutterSecureStorage();
     var auth = await storage.read(key: "auth_key");
     if (auth != null) {
-      final uri = Uri.https(serverUrl, "/auth/jwt/verify/");
+      final uri = Uri.http(serverUrl, "/auth/jwt/verify/");
       var body = json.encode({
         'token': auth,
       });
@@ -113,7 +112,7 @@ class UserRepository {
       if (response.statusCode != 200) {
         var refresh = await storage.read(key: "refresh");
         if (refresh != null) {
-          final uri = Uri.https(serverUrl, "/auth/jwt/refresh/");
+          final uri = Uri.http(serverUrl, "/auth/jwt/refresh/");
           var body = json.encode({
             'refresh': refresh,
           });

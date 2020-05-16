@@ -12,6 +12,7 @@ dependencies:
     sdk: flutter
   tuple: ^1.0.3
   meta: ^1.1.8
+  qr_code_scanner: ^0.0.13
   equatable: ^1.1.1
   http: ^0.12.1
   cupertino_icons: ^0.1.3
