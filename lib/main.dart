@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ticketspartyapp/blocs/home_screen_bloc/home_screen_bloc.dart';
-import 'package:ticketspartyapp/ui/screens/home_screen.dart';
+import 'package:ticketspartyapp/ui/screens/home_screen/home_screen.dart';
 import 'package:ticketspartyapp/ui/screens/welcome_screen.dart';
 
 import 'blocs/authentication_bloc/bloc.dart';

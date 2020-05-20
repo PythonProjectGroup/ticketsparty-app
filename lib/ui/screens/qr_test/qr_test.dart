@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:ticketspartyapp/blocs/authentication_bloc/authentication_bloc.dart';
+import 'package:ticketspartyapp/utils/data_repository.dart';
 
 const flashOn = 'FLASH ON';
 const flashOff = 'FLASH OFF';
@@ -140,10 +143,14 @@ class _QRViewExampleState extends State<QRViewExample> {
 
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
-    controller.scannedDataStream.listen((scanData) {
+    controller.scannedDataStream.listen((scanData) async {
       setState(() {
+        controller.pauseCamera();
         qrText = scanData;
       });
+      await DataRepository.addEventKey(
+          authenticationBloc: BlocProvider.of<AuthenticationBloc>(context),
+          key: scanData);
     });
   }
 }
