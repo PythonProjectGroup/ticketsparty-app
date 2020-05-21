@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:ticketspartyapp/models/event.dart';
 import 'package:ticketspartyapp/ui/screens/event_screen/event_screen.dart';
 
 class EventTile extends StatelessWidget {
-  final String name;
-  final id;
+  final Event event;
 
-  const EventTile({Key key, this.name, this.id}) : super(key: key);
+  const EventTile({Key key, this.event}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,10 +14,11 @@ class EventTile extends StatelessWidget {
         context,
         MaterialPageRoute(
             builder: (context) => EventScreen(
-                  eventID: int.parse(name),
+              event: event,
                 )),
       ),
-      title: Text(name),
+      title: Text(event.name),
+      leading: Image.network(event.pictureUrl),
     );
   }
 }

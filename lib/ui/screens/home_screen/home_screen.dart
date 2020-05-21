@@ -40,13 +40,18 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: addKey,
+        child: Icon(Icons.add),
       ),
-      backgroundColor: Colors.red,
-      body: ListView.builder(
-          itemCount: events.length,
-          itemBuilder: (BuildContext context, int index) {
-            return new EventTile(name: events[index].id.toString());
-          }),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListView.builder(
+            itemCount: events.length,
+            itemBuilder: (BuildContext context, int index) {
+              return new EventTile(
+                event: events[index],
+              );
+            }),
+      ),
     );
   }
 }
