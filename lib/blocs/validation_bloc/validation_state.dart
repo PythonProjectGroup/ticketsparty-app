@@ -17,21 +17,18 @@ class WaitingForQR extends ValidationState {
 
 class ShowingTicket extends ValidationState {
   final Ticket ticket;
+  final ValidationStatus status;
 
-  ShowingTicket(this.ticket);
+  ShowingTicket newStatus(ValidationStatus newStatus) {
+    return ShowingTicket(ticket, newStatus);
+  }
 
-  @override
-  List<Object> get props => [ticket];
-}
-
-class ValidatingTicket extends ValidationState {
-  final Ticket ticket;
-
-  ValidatingTicket(this.ticket);
+  ShowingTicket(this.ticket, this.status);
 
   @override
-  List<Object> get props => [ticket];
+  List<Object> get props => [ticket, status];
 }
+
 
 class ShowingError extends ValidationState {
   final String errorMessage;
@@ -50,3 +47,5 @@ class LoadingTicket extends ValidationState {
   @override
   List<Object> get props => [key];
 }
+
+enum ValidationStatus { Waiting, Success, Failure, Loading }

@@ -22,25 +22,34 @@ class ValidationBloc extends Bloc<ValidationEvent, ValidationState> {
   ) async* {
     if (event is FoundQR) {
       yield LoadingTicket(event.key);
-      var result = await DataRepository.getTicket(
-          authenticationBloc: authenticationBloc, key: event.key);
-      if (result is Ticket) {
-        if (result.eventID == eventID) {
-          yield ShowingTicket(result);
+      try {
+        var result = await DataRepository.getTicket(
+            authenticationBloc: authenticationBloc, key: event.key);
+        if (result is Ticket) {
+          if (result.eventID == eventID) {
+            yield ShowingTicket(result, ValidationStatus.Waiting);
+          } else {
+            yield ShowingError("Bilet na inne wydarzenie");
+          }
         } else {
-          yield ShowingError("Bilet na inne wydarzenie");
+          yield ShowingError(result);
         }
-      } else {
-        yield ShowingError(result);
+      } catch (error) {
+        yield ShowingError("Server Connection error");
       }
     } else if (event is ValidationStarted) {
-      yield ValidatingTicket(event.ticket);
-      bool success = await DataRepository.validateTicket(
-          authenticationBloc: authenticationBloc, key: event.ticket.hash);
-      if (success) {
-        yield WaitingForQR();
-      } else {
-        print("Error");
+      yield ShowingTicket(event.ticket, ValidationStatus.Loading);
+      try {
+        await Future.delayed(const Duration(seconds: 2), () {});
+        bool success = await DataRepository.validateTicket(
+            authenticationBloc: authenticationBloc, key: event.ticket.hash);
+        if (success) {
+          yield ShowingTicket(event.ticket, ValidationStatus.Success);
+        } else {
+          yield ShowingTicket(event.ticket, ValidationStatus.Failure);
+        }
+      } catch (error) {
+        yield ShowingTicket(event.ticket, ValidationStatus.Failure);
       }
     } else if (event is BackToScanning) {
       yield WaitingForQR();

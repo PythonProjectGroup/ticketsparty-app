@@ -72,6 +72,7 @@ class _ValidationScreenState extends State<ValidationScreen> {
 
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
+
     controller.scannedDataStream.listen((scanData) async {
       validationBloc.add(FoundQR(scanData));
     });
@@ -120,10 +121,55 @@ class _BottomSheetTicketState extends State<BottomSheetTicket> {
                               .toString()}"),
                       Container(
                         alignment: Alignment.center,
-                        child: RaisedButton.icon(
-                          icon: Icon(Icons.check),
-                          label: Text('Check and close'),
-                          onPressed: () =>
+                        child: GestureDetector(
+                          child: AnimatedContainer(
+                            decoration: BoxDecoration(
+                                color: state.status == ValidationStatus.Waiting
+                                    ? Colors.black
+                                    : state.status == ValidationStatus.Loading
+                                    ? Colors.black
+                                    : state.status == ValidationStatus.Success
+                                    ? Colors.green
+                                    : Colors.red,
+                                border: Border.all(
+                                    color: state.status ==
+                                        ValidationStatus.Waiting
+                                        ? Colors.blue
+                                        : state.status ==
+                                        ValidationStatus.Loading
+                                        ? Colors.blue
+                                        : state.status ==
+                                        ValidationStatus.Success
+                                        ? Colors.black
+                                        : Colors.black,
+                                    width: 2
+                                ),
+                                borderRadius: BorderRadius.circular(30)
+                            ),
+                            width: state.status == ValidationStatus.Waiting
+                                ? 200
+                                : state.status == ValidationStatus.Loading
+                                ? 50
+                                : state.status == ValidationStatus.Success
+                                ? 200
+                                : 200,
+                            height: 50,
+                            duration: Duration(milliseconds: 200),
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: state.status == ValidationStatus.Waiting
+                                    ? Text(
+                                  "Click To Validate", style: buttonTextStyle,)
+                                    : state.status == ValidationStatus.Loading
+                                    ? CircularProgressIndicator()
+                                    : state.status == ValidationStatus.Success
+                                    ? Text("Success", style: buttonTextStyle,)
+                                    : Text("Failure", style: buttonTextStyle,),
+                              ),
+                            ),
+                          ),
+                          onTap: () =>
                           {
                             BlocProvider.of<ValidationBloc>(context)
                                 .add(ValidationStarted(state.ticket)),
@@ -159,3 +205,6 @@ class _BottomSheetTicketState extends State<BottomSheetTicket> {
     );
   }
 }
+
+TextStyle buttonTextStyle = TextStyle(
+    color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600);
