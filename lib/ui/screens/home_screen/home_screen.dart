@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ticketspartyapp/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:ticketspartyapp/models/event.dart';
+import 'package:ticketspartyapp/ui/screens/add_event_screen/add_event_screen.dart';
 import 'package:ticketspartyapp/ui/screens/home_screen/event_tile.dart';
-import 'package:ticketspartyapp/ui/screens/qr_test/qr_test.dart';
 import 'package:ticketspartyapp/utils/data_repository.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -28,11 +28,12 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
-  void addKey() {
-    Navigator.push(
+  void addKey() async {
+    await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => QRViewExample()),
+      MaterialPageRoute(builder: (context) => AddEventScreen()),
     );
+    loadEvents();
   }
 
   @override

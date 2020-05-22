@@ -14,7 +14,7 @@ class DataRepository {
 
     var response = await ServerConnector.getFromServer(url, authenticationBloc);
     if (response.statusCode == 200) {
-      var data = json.decode(response.body);
+      var data = json.decode(utf8.decode(response.bodyBytes));
       data = data[0]["eventkeys"];
       final finalData = json.decode(data) as List;
       print(finalData);
@@ -51,24 +51,51 @@ class DataRepository {
     var response = await ServerConnector.postToServer(url, authenticationBloc);
     if (response.statusCode == 200) {
       print("Dodałem key");
-      return false;
+      return true;
     } else {
       print(response.body);
-      throw Exception('error adding key');
+      return false;
     }
   }
 
-  static Future<Ticket> getTicket(
+  static Future getTicket(
       {@required AuthenticationBloc authenticationBloc, @required key}) async {
-    String url = "/api/eventkeys/$key";
+    String url = "/api/tickets/$key";
 
-    var response = await ServerConnector.postToServer(url, authenticationBloc);
+    var response = await ServerConnector.getFromServer(url, authenticationBloc);
     if (response.statusCode == 200) {
-      print("Dodałem key");
-      return Ticket(personName: "Pan Mateusz Zasraniec", numberOfPeople: 5);
+      final data = json.decode(utf8.decode(response.bodyBytes));
+      print("Chyba mam bilet");
+      print(data);
+      return Ticket(
+          personName: data["names"],
+          numberOfPeople: data["amount"],
+          used: data["used"],
+          eventID: data["event_id"]);
+    } else if (response.statusCode == 404) {
+      var info = json.decode(response.body);
+      if (info["detail"] == "Nie znaleziono.") {
+        print("Brak Takiego biletu");
+        return "Brak takiego biletu";
+      }
+      print(response.statusCode);
     } else {
-      print(response.body);
-      throw Exception('error adding key');
+      throw Exception('error loading ticket');
+    }
+  }
+
+  static Future validateTicket(
+      {@required AuthenticationBloc authenticationBloc, @required key}) async {
+    String url = "/api/tickets/$key/validate/";
+
+    var response = await ServerConnector.patchToServer(url, authenticationBloc);
+    if (response.statusCode == 200) {
+      final data = json.decode(utf8.decode(response.bodyBytes));
+      print("Chyba zvalidowałem bilet");
+      print(data);
+      return true;
+    } else {
+      throw Exception('error loading ticket');
     }
   }
 
@@ -77,8 +104,9 @@ class DataRepository {
     String url = "/api/events/$id";
 
     var response = await ServerConnector.getFromServer(url, authenticationBloc);
+    print(response);
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
+      final data = json.decode(utf8.decode(response.bodyBytes));
       print(data);
       return Event(
           id: data["id"],
@@ -98,7 +126,7 @@ class DataRepository {
 
     var response = await ServerConnector.getFromServer(url, authenticationBloc);
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
+      final data = json.decode(utf8.decode(response.bodyBytes));
       print(data);
       var events = data.map((rawPost) {
         return Event(

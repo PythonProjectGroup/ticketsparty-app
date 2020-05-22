@@ -9,16 +9,21 @@ class EventTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => EventScreen(
-              event: event,
-                )),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ListTile(
+        onTap: () =>
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      EventScreen(
+                        event: event,
+                      )),
+            ),
+        title: Text(event.name),
+        leading: Image.network(event.pictureUrl),
       ),
-      title: Text(event.name),
-      leading: Image.network(event.pictureUrl),
     );
   }
 }

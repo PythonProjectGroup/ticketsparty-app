@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ticketspartyapp/blocs/authentication_bloc/authentication_bloc.dart';
+import 'package:ticketspartyapp/blocs/validation_bloc/validation_bloc.dart';
 import 'package:ticketspartyapp/models/event.dart';
 import 'package:ticketspartyapp/ui/screens/validation_screen/validation_screen.dart';
 import 'package:ticketspartyapp/utils/data_repository.dart';
@@ -36,7 +37,15 @@ class _EventScreenState extends State<EventScreen> {
 
   void proceedToValidation() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => ValidationScreen()));
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                BlocProvider<ValidationBloc>(
+                    create: (BuildContext context) =>
+                        ValidationBloc(
+                            BlocProvider.of<AuthenticationBloc>(context),
+                            event.id),
+                    child: ValidationScreen())));
   }
 
   @override
