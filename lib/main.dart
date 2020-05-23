@@ -5,6 +5,7 @@ import 'package:ticketspartyapp/ui/screens/home_screen/home_screen.dart';
 import 'package:ticketspartyapp/ui/screens/welcome_screen.dart';
 
 import 'blocs/authentication_bloc/bloc.dart';
+import 'ui/screens/NoConnectionScreen/no_connection_screen.dart';
 import 'ui/screens/splash_screen.dart';
 
 class SimpleBlocDelegate extends BlocDelegate {
@@ -57,6 +58,9 @@ class App extends StatelessWidget {
           }
           if (state is AuthenticationUnauthenticated) {
             return WelcomeScreen();
+          }
+          if (state is AuthenticationNotPossible) {
+            return NoConnectionScreen();
           }
           return CircularProgressIndicator();
         },

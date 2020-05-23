@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
-import 'package:ticketspartyapp/blocs/validation_bloc/validation_bloc.dart';
-import 'package:ticketspartyapp/blocs/validation_bloc/validation_event.dart';
-import 'package:ticketspartyapp/blocs/validation_bloc/validation_state.dart';
+import 'package:ticketspartyapp/blocs/validation_bloc/bloc.dart';
+import 'package:ticketspartyapp/blocs/validation_screen_bloc/bloc.dart';
 import 'package:ticketspartyapp/models/event.dart';
+
+import 'ticket_sheet.dart';
 
 class ValidationScreen extends StatefulWidget {
   final Event event;
@@ -19,54 +20,145 @@ class ValidationScreen extends StatefulWidget {
 class _ValidationScreenState extends State<ValidationScreen> {
   QRViewController controller;
   bool isOpen = false;
+  bool torchOn = false;
+  bool backCamera = true;
   ValidationBloc validationBloc;
+  ValidationScreenBloc validationScreenBloc;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   final GlobalKey<ScaffoldState> scaffold = GlobalKey<ScaffoldState>();
+  PersistentBottomSheetController bottomSheetController;
 
   @override
   void initState() {
     validationBloc = BlocProvider.of<ValidationBloc>(context);
+    validationScreenBloc = BlocProvider.of<ValidationScreenBloc>(context);
     super.initState();
   }
 
   @override
   void dispose() {
     validationBloc.close();
+    validationScreenBloc.close();
     super.dispose();
+  }
+
+  void switchTorch() {
+    setState(() {
+      torchOn = !torchOn;
+    });
+    controller.toggleFlash();
+  }
+
+  void switchCamera() {
+    setState(() {
+      backCamera = !backCamera;
+    });
+    controller.flipCamera();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ValidationBloc, ValidationState>(
-      listener: (BuildContext context, ValidationState state) {
-        if (state is LoadingTicket) {
-          controller.pauseCamera();
-          scaffold.currentState
-              .showBottomSheet((context) => BottomSheetTicket());
-        } else if (state is WaitingForQR) {
+    return BlocListener<ValidationScreenBloc, ValidationScreenState>(
+      listener: (BuildContext context, ValidationScreenState state) {
+        if (state.scanning) {
           controller.resumeCamera();
+        } else {
+          controller.pauseCamera();
+        }
+        if (state.showingTicket) {
+          if (!isOpen) {
+            bottomSheetController = scaffold.currentState
+                .showBottomSheet((context) => BottomSheetTicket());
+            isOpen = true;
+          }
+        } else {
+          if (isOpen) {
+            try {
+              bottomSheetController.close();
+            } catch (error) {}
+            isOpen = false;
+          }
         }
       },
-      child: Scaffold(
-        key: scaffold,
-        body: Column(
-          children: <Widget>[
-            Expanded(
-              child: QRView(
+      child: BlocBuilder<ValidationScreenBloc, ValidationScreenState>(
+          builder: (BuildContext context, state) {
+            return Scaffold(
+              floatingActionButton: FloatingActionButton(
+                child: Icon(
+                  state.showingTicket ? Icons.arrow_downward : Icons
+                      .arrow_upward,
+                ),
+                onPressed: () {
+                  if (!state.showingTicket) {
+                    validationScreenBloc.add(OpenSheetPressed());
+                  } else {
+                    validationScreenBloc.add(CloseSheetPressed());
+                  }
+                },
+              ),
+              key: scaffold,
+              body: Stack(
+                children: [
+                  QRView(
                 key: qrKey,
                 onQRViewCreated: _onQRViewCreated,
                 overlay: QrScannerOverlayShape(
-                  borderColor: Colors.red,
-                  borderRadius: 10,
-                  borderLength: 30,
+                  borderColor: Colors.white,
+                  borderRadius: 20,
+                  borderLength: 50,
                   borderWidth: 10,
-                  cutOutSize: 300,
+                  cutOutSize: 400,
                 ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Align(
+                      alignment: AlignmentDirectional.bottomEnd,
+                      child: Container(
+                        width: 100,
+                        height: 100,
+                        child: RaisedButton(
+                          color: Color(0x30000000),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(90),
+                              side: BorderSide(color: Colors.white)),
+                          onPressed: switchTorch,
+                          child: Icon(
+                            Icons.flash_on,
+                            size: 70,
+                            color: torchOn ? Colors.yellow : Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Align(
+                      alignment: AlignmentDirectional.bottomStart,
+                      child: Container(
+                        width: 100,
+                        height: 100,
+                        child: RaisedButton(
+                          color: Color(0x30000000),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(90),
+                              side: BorderSide(color: Colors.white)),
+                          onPressed: switchCamera,
+                          child: Icon(
+                            backCamera ? Icons.camera_enhance : Icons
+                                .camera_front,
+                            size: 70,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
-      ),
+            );
+          }),
     );
   }
 
@@ -74,137 +166,7 @@ class _ValidationScreenState extends State<ValidationScreen> {
     this.controller = controller;
 
     controller.scannedDataStream.listen((scanData) async {
-      validationBloc.add(FoundQR(scanData));
+      validationScreenBloc.add(FoundQR(scanData));
     });
   }
 }
-
-class BottomSheetTicket extends StatefulWidget {
-  const BottomSheetTicket({Key key}) : super(key: key);
-
-  @override
-  _BottomSheetTicketState createState() => _BottomSheetTicketState();
-}
-
-class _BottomSheetTicketState extends State<BottomSheetTicket> {
-  Future<bool> _willPopCallback() async {
-    BlocProvider.of<ValidationBloc>(context).add(BackToScanning());
-    return false;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: _willPopCallback,
-      child: BlocListener<ValidationBloc, ValidationState>(
-        listener: (BuildContext context, ValidationState state) {
-          if (state is WaitingForQR) {
-            Navigator.pop(context);
-          }
-        },
-        child: Container(
-            height: 300,
-            padding: EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.blue, width: 2.0),
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            child: BlocBuilder<ValidationBloc, ValidationState>(
-              builder: (BuildContext context, state) {
-                if (state is ShowingTicket) {
-                  return ListView(
-                    children: <Widget>[
-                      ListTile(title: Text('Ticket')),
-                      Text("Name: ${state.ticket.personName}"),
-                      Text(
-                          "Number of people: ${state.ticket.numberOfPeople
-                              .toString()}"),
-                      Container(
-                        alignment: Alignment.center,
-                        child: GestureDetector(
-                          child: AnimatedContainer(
-                            decoration: BoxDecoration(
-                                color: state.status == ValidationStatus.Waiting
-                                    ? Colors.black
-                                    : state.status == ValidationStatus.Loading
-                                    ? Colors.black
-                                    : state.status == ValidationStatus.Success
-                                    ? Colors.green
-                                    : Colors.red,
-                                border: Border.all(
-                                    color: state.status ==
-                                        ValidationStatus.Waiting
-                                        ? Colors.blue
-                                        : state.status ==
-                                        ValidationStatus.Loading
-                                        ? Colors.blue
-                                        : state.status ==
-                                        ValidationStatus.Success
-                                        ? Colors.black
-                                        : Colors.black,
-                                    width: 2
-                                ),
-                                borderRadius: BorderRadius.circular(30)
-                            ),
-                            width: state.status == ValidationStatus.Waiting
-                                ? 200
-                                : state.status == ValidationStatus.Loading
-                                ? 50
-                                : state.status == ValidationStatus.Success
-                                ? 200
-                                : 200,
-                            height: 50,
-                            duration: Duration(milliseconds: 200),
-                            child: Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: state.status == ValidationStatus.Waiting
-                                    ? Text(
-                                  "Click To Validate", style: buttonTextStyle,)
-                                    : state.status == ValidationStatus.Loading
-                                    ? CircularProgressIndicator()
-                                    : state.status == ValidationStatus.Success
-                                    ? Text("Success", style: buttonTextStyle,)
-                                    : Text("Failure", style: buttonTextStyle,),
-                              ),
-                            ),
-                          ),
-                          onTap: () =>
-                          {
-                            BlocProvider.of<ValidationBloc>(context)
-                                .add(ValidationStarted(state.ticket)),
-                          },
-                        ),
-                      ),
-                      Container(
-                        alignment: Alignment.center,
-                        child: RaisedButton.icon(
-                          icon: Icon(Icons.close),
-                          label: Text('Close'),
-                          onPressed: () =>
-                          {
-                            BlocProvider.of<ValidationBloc>(context)
-                                .add(BackToScanning()),
-                          },
-                        ),
-                      ),
-                    ],
-                  );
-                } else if (state is ShowingError) {
-                  return Center(
-                    child: Text(state.errorMessage),
-                  );
-                } else {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-              },
-            )),
-      ),
-    );
-  }
-}
-
-TextStyle buttonTextStyle = TextStyle(
-    color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600);

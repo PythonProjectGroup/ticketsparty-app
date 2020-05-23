@@ -20,13 +20,14 @@ class ValidationBloc extends Bloc<ValidationEvent, ValidationState> {
   Stream<ValidationState> mapEventToState(
     ValidationEvent event,
   ) async* {
-    if (event is FoundQR) {
+    if (event is FoundTicket) {
       yield LoadingTicket(event.key);
       try {
         var result = await DataRepository.getTicket(
             authenticationBloc: authenticationBloc, key: event.key);
         if (result is Ticket) {
           if (result.eventID == eventID) {
+            result.hash = event.key;
             yield ShowingTicket(result, ValidationStatus.Waiting);
           } else {
             yield ShowingError("Bilet na inne wydarzenie");

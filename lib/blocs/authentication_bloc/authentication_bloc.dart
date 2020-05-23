@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ticketspartyapp/utils/user_repository.dart';
 import 'package:tuple/tuple.dart';
+
 import './bloc.dart';
 
 class AuthenticationBloc
@@ -13,12 +14,18 @@ class AuthenticationBloc
       AuthenticationEvent event,
       ) async* {
     if (event is AppStarted) {
-      final String token = await UserRepository.getTokenAndVerify();
-      print(token);
-      if (token != null) {
-        yield AuthenticationAuthenticated(authToken: token);
-      } else {
-        yield AuthenticationUnauthenticated();
+      try {
+        final String token = await UserRepository.getTokenAndVerify();
+        print(token);
+        if (token != null) {
+          yield AuthenticationAuthenticated(authToken: token);
+        } else {
+          yield AuthenticationUnauthenticated();
+        }
+      } catch (error) {
+        print(error);
+
+        yield AuthenticationNotPossible();
       }
     }
 

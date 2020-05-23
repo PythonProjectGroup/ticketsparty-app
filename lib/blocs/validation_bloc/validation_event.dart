@@ -5,10 +5,10 @@ abstract class ValidationEvent extends Equatable {
   const ValidationEvent();
 }
 
-class FoundQR extends ValidationEvent {
+class FoundTicket extends ValidationEvent {
   final String key;
 
-  FoundQR(this.key);
+  FoundTicket(this.key);
 
   @override
   List<Object> get props => [key];

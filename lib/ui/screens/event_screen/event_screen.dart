@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ticketspartyapp/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:ticketspartyapp/blocs/validation_bloc/validation_bloc.dart';
+import 'package:ticketspartyapp/blocs/validation_screen_bloc/validation_screen_bloc.dart';
 import 'package:ticketspartyapp/models/event.dart';
 import 'package:ticketspartyapp/ui/screens/validation_screen/validation_screen.dart';
 import 'package:ticketspartyapp/utils/data_repository.dart';
@@ -37,15 +38,25 @@ class _EventScreenState extends State<EventScreen> {
 
   void proceedToValidation() {
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            MultiBlocProvider(
+              providers: [
                 BlocProvider<ValidationBloc>(
-                    create: (BuildContext context) =>
-                        ValidationBloc(
-                            BlocProvider.of<AuthenticationBloc>(context),
-                            event.id),
-                    child: ValidationScreen())));
+                  create: (BuildContext context) =>
+                      ValidationBloc(
+                          BlocProvider.of<AuthenticationBloc>(context),
+                          event.id),
+                ),
+                BlocProvider<ValidationScreenBloc>(
+                  create: (BuildContext context) => ValidationScreenBloc(),
+                ),
+              ],
+              child: ValidationScreen(),
+            ),
+      ),
+    );
   }
 
   @override
@@ -53,14 +64,14 @@ class _EventScreenState extends State<EventScreen> {
     return Scaffold(
       floatingActionButton: RaisedButton(
         textColor: Colors.white,
-        color: Colors.blue,
+        color: Colors.black87,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
         onPressed: proceedToValidation,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
             "VALIDATE",
-            style: TextStyle(fontSize: 30),
+            style: TextStyle(fontSize: 25, fontWeight: FontWeight.w400),
           ),
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ticketspartyapp/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:ticketspartyapp/models/event.dart';
@@ -13,6 +14,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<Event> events = List<Event>();
+  GlobalKey<ScaffoldState> scaffold = GlobalKey<ScaffoldState>();
 
   Future loadEvents() async {
     var loadedEvents = await DataRepository.getEventsWithKey(
@@ -39,19 +41,192 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffold,
+      appBar: CustomAppBar(
+        drawerKey: scaffold,
+        child: Row(
+          children: [Text("app")],
+        ),
+      ),
+      drawer: Drawer(
+        child: Container(
+          color: Colors.black87,
+          child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            offset: Offset(0.0, 3.0),
+                            blurRadius: 3.0,
+                          ),
+                        ],
+                      ),
+                      height: kToolbarHeight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 40, right: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Joachim Schmidt",
+                              style:
+                              TextStyle(color: Colors.white, fontSize: 20),
+                            ),
+                            GestureDetector(
+                              onTap: () => Navigator.pop(context),
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 10),
+                                child: Icon(
+                                  Icons.list,
+                                  color: Colors.white,
+                                  size: 30,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 30, top: 50),
+                      child: Column(
+                        children: [
+                          GestureDetector(
+                            onTap: addKey,
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 20),
+                                    child: Icon(
+                                      Icons.add,
+                                      color: Colors.white,
+                                      size: 30,
+                                    ),
+                                  ),
+                                  Text(
+                                    "Add Event",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 20),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+                Center(
+                  child: GestureDetector(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 30.0),
+                      child: Text(
+                        "Logout",
+                        style: TextStyle(color: Colors.grey[100], fontSize: 20),
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.black87,
         onPressed: addKey,
         child: Icon(Icons.add),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: ListView.builder(
+        child: events.length == 0
+            ? Center(
+          child: Text("Press + to add event"),
+        )
+            : ListView.builder(
             itemCount: events.length,
             itemBuilder: (BuildContext context, int index) {
               return new EventTile(
                 event: events[index],
               );
             }),
+      ),
+    );
+  }
+}
+
+class CustomAppBar extends PreferredSize {
+  final Widget child;
+  final double height;
+  final GlobalKey<ScaffoldState> drawerKey;
+
+  CustomAppBar(
+      {@required this.child, this.height = kToolbarHeight, this.drawerKey});
+
+  @override
+  Size get preferredSize => Size.fromHeight(height);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.black87,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blueGrey,
+            offset: Offset(0.0, 3.0),
+            blurRadius: 3.0,
+          ),
+        ],
+      ),
+      height: height + 30,
+      child: SafeArea(
+        child: Container(
+          color: Colors.black87,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: Stack(
+              children: [
+                Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: GestureDetector(
+                    onTap: () => drawerKey.currentState.openDrawer(),
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          right: 20, top: 10, bottom: 10, left: 20),
+                      child: Icon(
+                        Icons.list,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                    ),
+                  ),
+                ),
+                Align(
+                    alignment: AlignmentDirectional.center,
+                    child: Text(
+                      "Home Screen",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 25),
+                      textAlign: TextAlign.center,
+                    ))
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
