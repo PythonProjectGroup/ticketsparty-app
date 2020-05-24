@@ -5,10 +5,6 @@ abstract class ValidationState extends Equatable {
   const ValidationState();
 }
 
-class InitialValidationState extends ValidationState {
-  @override
-  List<Object> get props => [];
-}
 
 class WaitingForQR extends ValidationState {
   @override

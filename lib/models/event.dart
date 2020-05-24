@@ -11,6 +11,7 @@ class Event {
   String postCode;
 
   Event({this.id, this.name, this.key, this.pictureUrl, this.city,
-    this.description});
+    this.description, this.date, this.street, this.address, this.postCode});
+
 
 }

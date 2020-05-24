@@ -20,7 +20,7 @@ class EventScreen extends StatefulWidget {
 class _EventScreenState extends State<EventScreen> {
   Event event;
   bool isLoaded = false;
-
+  GlobalKey <ScaffoldState> scaffold = GlobalKey<ScaffoldState>();
   Future getEventInfo() async {
     event = await DataRepository.getEvent(
         authenticationBloc: BlocProvider.of<AuthenticationBloc>(context),
@@ -62,6 +62,10 @@ class _EventScreenState extends State<EventScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffold,
+      appBar: AppBar(title: Text("Event"),
+        centerTitle: true,
+        backgroundColor: Colors.black87,),
       floatingActionButton: RaisedButton(
         textColor: Colors.white,
         color: Colors.black87,
@@ -82,12 +86,19 @@ class _EventScreenState extends State<EventScreen> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: <Widget>[
-                Text(
-                  event.name,
-                  style: TextStyle(
-                      fontWeight: FontWeight.w600, fontSize: 30),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text(
+                    event.name,
+                    style: TextStyle(
+                        fontWeight: FontWeight.w600, fontSize: 30),
+                  ),
                 ),
-                Text(event.description),
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Text(
+                    event.description, style: TextStyle(fontSize: 16),),
+                ),
                 Image.network(event.pictureUrl)
               ],
             ),

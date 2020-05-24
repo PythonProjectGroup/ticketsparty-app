@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:ticketspartyapp/models/event.dart';
 import 'package:ticketspartyapp/ui/screens/event_screen/event_screen.dart';
 
@@ -22,7 +23,18 @@ class EventTile extends StatelessWidget {
                       )),
             ),
         title: Text(event.name),
-        leading: Image.network(event.pictureUrl),
+        leading: Container(
+          width: 100,
+          height: 50,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+                image: NetworkImage(event.pictureUrl),
+                fit: BoxFit.cover
+            ),
+          ),
+        ),
+        trailing: Text(
+            "${event.date.year}.${event.date.month}.${event.date.day}"),
       ),
     );
   }

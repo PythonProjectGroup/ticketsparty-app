@@ -15,10 +15,8 @@ class CloseSheetPressed extends ValidationScreenEvent {
 }
 
 class FoundQR extends ValidationScreenEvent {
-  final String data;
 
-  FoundQR(this.data);
 
   @override
-  List<Object> get props => [data];
+  List<Object> get props => [];
 }

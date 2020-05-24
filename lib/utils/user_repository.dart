@@ -28,7 +28,6 @@ class UserRepository {
       body: body,
     );
     if (response.statusCode != 200) {
-      print("CHUJuw sto");
       print(response.body);
       return null;
     }
@@ -59,7 +58,6 @@ class UserRepository {
       body: body,
     );
     if (response.statusCode != 201) {
-      print("CHUJuw sto");
       print(response.statusCode);
       print(response.body);
       return null;
@@ -139,6 +137,7 @@ class UserRepository {
         return auth;
       }
     } else {
+      print("Nie widzę tokena w storage");
       return null;
     }
   }

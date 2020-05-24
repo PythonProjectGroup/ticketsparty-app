@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ticketspartyapp/blocs/authentication_bloc/authentication_bloc.dart';
+import 'package:ticketspartyapp/blocs/authentication_bloc/authentication_event.dart';
 import 'package:ticketspartyapp/models/event.dart';
 import 'package:ticketspartyapp/ui/screens/add_event_screen/add_event_screen.dart';
 import 'package:ticketspartyapp/ui/screens/home_screen/event_tile.dart';
@@ -42,12 +43,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffold,
-      appBar: CustomAppBar(
-        drawerKey: scaffold,
-        child: Row(
-          children: [Text("app")],
-        ),
-      ),
+      appBar: AppBar(title: Text("Home Screen"),
+        centerTitle: true,
+        backgroundColor: Colors.black87,),
       drawer: Drawer(
         child: Container(
           color: Colors.black87,
@@ -129,6 +127,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 Center(
                   child: GestureDetector(
+                    onTap: () =>
+                        BlocProvider.of<AuthenticationBloc>(context)
+                            .add(LoggedOut()),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 30.0),
                       child: Text(
@@ -166,68 +167,3 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class CustomAppBar extends PreferredSize {
-  final Widget child;
-  final double height;
-  final GlobalKey<ScaffoldState> drawerKey;
-
-  CustomAppBar(
-      {@required this.child, this.height = kToolbarHeight, this.drawerKey});
-
-  @override
-  Size get preferredSize => Size.fromHeight(height);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.black87,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.blueGrey,
-            offset: Offset(0.0, 3.0),
-            blurRadius: 3.0,
-          ),
-        ],
-      ),
-      height: height + 30,
-      child: SafeArea(
-        child: Container(
-          color: Colors.black87,
-          child: Padding(
-            padding: const EdgeInsets.only(right: 20),
-            child: Stack(
-              children: [
-                Align(
-                  alignment: AlignmentDirectional.centerStart,
-                  child: GestureDetector(
-                    onTap: () => drawerKey.currentState.openDrawer(),
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          right: 20, top: 10, bottom: 10, left: 20),
-                      child: Icon(
-                        Icons.list,
-                        color: Colors.white,
-                        size: 30,
-                      ),
-                    ),
-                  ),
-                ),
-                Align(
-                    alignment: AlignmentDirectional.center,
-                    child: Text(
-                      "Home Screen",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w400,
-                          fontSize: 25),
-                      textAlign: TextAlign.center,
-                    ))
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}

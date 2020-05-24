@@ -17,6 +17,7 @@ class AuthenticationBloc
       try {
         final String token = await UserRepository.getTokenAndVerify();
         print(token);
+        print("Nie wysypało się dziwne");
         if (token != null) {
           yield AuthenticationAuthenticated(authToken: token);
         } else {
@@ -46,6 +47,9 @@ class AuthenticationBloc
     }
     if (event is LostAuthentication) {
       yield AuthenticationUnauthenticated();
+    }
+    if (event is AuthenticationError) {
+      yield AuthenticationNotPossible();
     }
   }
 }

@@ -75,7 +75,8 @@ class _LoginScreenState extends State<LoginScreen> {
             BlocListener<AuthenticationBloc, AuthenticationState>(
               bloc: BlocProvider.of<AuthenticationBloc>(context),
               listener: (BuildContext context, state) {
-                if (state is AuthenticationAuthenticated) {
+                if (state is AuthenticationAuthenticated ||
+                    state is AuthenticationNotPossible) {
                   Navigator.of(context).pop();
                 }
               },

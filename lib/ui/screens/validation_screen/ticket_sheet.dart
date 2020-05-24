@@ -41,11 +41,11 @@ class _BottomSheetTicketState extends State<BottomSheetTicket> {
       onWillPop: _willPopCallback,
       child: BlocListener<ValidationBloc, ValidationState>(
         listener: (BuildContext context, ValidationState state) {
-          if (state is WaitingForQR) {
-            Navigator.pop(context);
-          } else if (state is ShowingTicket) {
+          if (state is ShowingTicket) {
             if (state.status == ValidationStatus.Success) {
               Future.delayed(const Duration(milliseconds: 400), () {
+                BlocProvider.of<ValidationScreenBloc>(context).add(
+                    CloseSheetPressed());
                 BlocProvider.of<ValidationBloc>(context).add(BackToScanning());
               });
             }
@@ -63,19 +63,6 @@ class _BottomSheetTicketState extends State<BottomSheetTicket> {
                 if (state is ShowingTicket) {
                   return Column(
                     children: <Widget>[
-                      Container(
-                        alignment: Alignment.center,
-                        child: GestureDetector(
-                          child: Icon(
-                            Icons.arrow_downward,
-                            size: 30,
-                          ),
-                          onTap: () => {
-                            BlocProvider.of<ValidationBloc>(context)
-                                .add(BackToScanning()),
-                          },
-                        ),
-                      ),
                       Text('Ticket'),
                       Text("Name: ${state.ticket.personName}"),
                       Text(
@@ -152,9 +139,13 @@ class _BottomSheetTicketState extends State<BottomSheetTicket> {
                   return Center(
                     child: Text(state.errorMessage),
                   );
-                } else {
+                } else if (state is LoadingTicket) {
                   return Center(
                     child: CircularProgressIndicator(),
+                  );
+                } else {
+                  return Center(
+                    child: Text("Please scan QR code"),
                   );
                 }
               },

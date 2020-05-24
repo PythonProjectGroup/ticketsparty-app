@@ -14,7 +14,7 @@ class ValidationBloc extends Bloc<ValidationEvent, ValidationState> {
   ValidationBloc(this.authenticationBloc, this.eventID);
 
   @override
-  ValidationState get initialState => InitialValidationState();
+  ValidationState get initialState => WaitingForQR();
 
   @override
   Stream<ValidationState> mapEventToState(

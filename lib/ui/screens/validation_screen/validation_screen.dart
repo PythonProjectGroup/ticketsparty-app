@@ -93,6 +93,7 @@ class _ValidationScreenState extends State<ValidationScreen> {
                     validationScreenBloc.add(OpenSheetPressed());
                   } else {
                     validationScreenBloc.add(CloseSheetPressed());
+                    validationBloc.add(BackToScanning());
                   }
                 },
               ),
@@ -110,46 +111,50 @@ class _ValidationScreenState extends State<ValidationScreen> {
                   cutOutSize: 400,
                 ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Align(
-                      alignment: AlignmentDirectional.bottomEnd,
-                      child: Container(
-                        width: 100,
-                        height: 100,
-                        child: RaisedButton(
-                          color: Color(0x30000000),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(90),
-                              side: BorderSide(color: Colors.white)),
-                          onPressed: switchTorch,
-                          child: Icon(
-                            Icons.flash_on,
-                            size: 70,
-                            color: torchOn ? Colors.yellow : Colors.white,
+                  SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Align(
+                        alignment: AlignmentDirectional.topEnd,
+                        child: Container(
+                          width: 100,
+                          height: 100,
+                          child: RaisedButton(
+                            color: Color(0x30000000),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(90),
+                                side: BorderSide(color: Colors.white)),
+                            onPressed: switchTorch,
+                            child: Icon(
+                              Icons.flash_on,
+                              size: 70,
+                              color: torchOn ? Colors.yellow : Colors.white,
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Align(
-                      alignment: AlignmentDirectional.bottomStart,
-                      child: Container(
-                        width: 100,
-                        height: 100,
-                        child: RaisedButton(
-                          color: Color(0x30000000),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(90),
-                              side: BorderSide(color: Colors.white)),
-                          onPressed: switchCamera,
-                          child: Icon(
-                            backCamera ? Icons.camera_enhance : Icons
-                                .camera_front,
-                            size: 70,
-                            color: Colors.white,
+                  SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Align(
+                        alignment: AlignmentDirectional.topStart,
+                        child: Container(
+                          width: 100,
+                          height: 100,
+                          child: RaisedButton(
+                            color: Color(0x30000000),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(90),
+                                side: BorderSide(color: Colors.white)),
+                            onPressed: switchCamera,
+                            child: Icon(
+                              backCamera ? Icons.camera_enhance : Icons
+                                  .camera_front,
+                              size: 70,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
@@ -166,7 +171,8 @@ class _ValidationScreenState extends State<ValidationScreen> {
     this.controller = controller;
 
     controller.scannedDataStream.listen((scanData) async {
-      validationScreenBloc.add(FoundQR(scanData));
+      validationScreenBloc.add(FoundQR());
+      validationBloc.add(FoundTicket(scanData));
     });
   }
 }

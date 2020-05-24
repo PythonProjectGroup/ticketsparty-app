@@ -29,20 +29,22 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   Stream<LoginState> _mapSubmitToState() async* {
     yield LoadingLogin();
-    //try {
-    final token = await UserRepository.login(password: password, email: email);
-    if (token != null) {
-      await UserRepository.persistTokenAndRefresh(token);
-      await new Future.delayed(Duration(seconds: 2));
-      authenticationBloc
-          .add(LoggedIn(token: token.item2, refresh: token.item1));
-      yield SuccessLogin();
-    } else {
-      yield ErrorLogin("No such user");
+    try {
+      final token =
+      await UserRepository.login(password: password, email: email);
+      if (token != null) {
+        await UserRepository.persistTokenAndRefresh(token);
+        await new Future.delayed(Duration(seconds: 2));
+        authenticationBloc
+            .add(LoggedIn(token: token.item2, refresh: token.item1));
+        yield SuccessLogin();
+      } else {
+        yield ErrorLogin("No such user");
+      }
+    } catch (e, s) {
+      authenticationBloc.add(AuthenticationError());
     }
-  } //catch (e, s) {
-  //yield ErrorLogin("$e $s");
-  //}
+  }
 
   @override
   Future<void> close() {

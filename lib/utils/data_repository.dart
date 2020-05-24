@@ -133,6 +133,7 @@ class DataRepository {
             id: rawPost["id"],
             name: rawPost["event_name"],
             description: rawPost["descriptions"],
+            date: DateTime.parse(rawPost["event_date"]),
             pictureUrl: rawPost["pictures"],
             city: rawPost["city"]);
       }).toList();
