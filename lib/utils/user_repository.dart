@@ -6,7 +6,6 @@ import 'package:meta/meta.dart';
 import 'package:ticketspartyapp/constraints.dart';
 import 'package:tuple/tuple.dart';
 
-
 class UserRepository {
   static Future<Tuple2<String, String>> login({
     @required String email,
@@ -41,12 +40,16 @@ class UserRepository {
   static Future<bool> register({
     @required String email,
     @required String password,
+    @required String name,
   }) async {
     final uri = Uri.http(serverUrl, "/auth/users/");
-    var body = json.encode({
-      'email': email,
-      'password': password
-    });
+    var body = json.encode(
+      {
+        'email': email,
+        'password': password,
+        'name': name,
+      },
+    );
 
     print('Body: $body');
     print("Rejestruje");
@@ -86,9 +89,11 @@ class UserRepository {
     await storage.write(key: "auth_key", value: token);
     return;
   }
+
   static Future<String> getToken() async {
     return await FlutterSecureStorage().read(key: "auth_key");
   }
+
   static Future<String> getTokenAndVerify() async {
     final storage = new FlutterSecureStorage();
     var auth = await storage.read(key: "auth_key");

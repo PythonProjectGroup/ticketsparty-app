@@ -10,6 +10,7 @@ import './bloc.dart';
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   String email;
   String password;
+  String name;
   final AuthenticationBloc authenticationBloc;
 
   RegisterBloc({@required this.authenticationBloc});
@@ -19,7 +20,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
   @override
   Stream<RegisterState> mapEventToState(RegisterEvent event) async* {
-     if (event is SubmitRegister) {
+    if (event is SubmitRegister) {
       yield* _mapSubmitToState();
     }
   }
@@ -29,7 +30,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     yield LoadingRegister();
     try {
       final result = await UserRepository.register(
-          password: password, email: email);
+          password: password, email: email, name: name);
       if (result != null) {
         final token =
             await UserRepository.login(password: password, email: email);
