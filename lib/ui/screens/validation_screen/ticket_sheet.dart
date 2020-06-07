@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ticketspartyapp/blocs/validation_bloc/bloc.dart';
 import 'package:ticketspartyapp/blocs/validation_screen_bloc/bloc.dart';
@@ -44,8 +45,8 @@ class _BottomSheetTicketState extends State<BottomSheetTicket> {
           if (state is ShowingTicket) {
             if (state.status == ValidationStatus.Success) {
               Future.delayed(const Duration(milliseconds: 400), () {
-                BlocProvider.of<ValidationScreenBloc>(context).add(
-                    CloseSheetPressed());
+                BlocProvider.of<ValidationScreenBloc>(context)
+                    .add(CloseSheetPressed());
                 BlocProvider.of<ValidationBloc>(context).add(BackToScanning());
               });
             }
@@ -62,46 +63,67 @@ class _BottomSheetTicketState extends State<BottomSheetTicket> {
               builder: (BuildContext context, state) {
                 if (state is ShowingTicket) {
                   return Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
-                      Text('Ticket'),
-                      Text("Name: ${state.ticket.personName}"),
-                      Text(
-                        "Number of people: ${state.ticket.numberOfPeople.toString()}",
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(
+                              "Name: ${state.ticket.personName}",
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            Text(
+                              "Number of people: ${state.ticket.numberOfPeople.toString()}",
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          ],
+                        ),
                       ),
-                      Text("Used: ${state.ticket.used}"),
-                      Container(
-                        alignment: Alignment.center,
-                        child: GestureDetector(
-                          child: AnimatedContainer(
-                            decoration: BoxDecoration(
-                                color: state.status == ValidationStatus.Waiting
-                                    ? Colors.black
-                                    : state.status == ValidationStatus.Loading
-                                        ? Colors.black
-                                        : state.status ==
-                                                ValidationStatus.Success
-                                            ? Colors.green
-                                            : Colors.red,
+                      state.ticket.used
+                          ? Text(
+                              "This ticket is already used!",
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.w600),
+                            )
+                          : Container(
+                              alignment: Alignment.bottomCenter,
+                              child: GestureDetector(
+                                child: AnimatedContainer(
+                                  decoration: BoxDecoration(
+                                      color: state.status ==
+                                              ValidationStatus.Waiting
+                                          ? Colors.black
+                                          : state.status ==
+                                                  ValidationStatus.Loading
+                                              ? Colors.black
+                                              : state.status ==
+                                                      ValidationStatus.Success
+                                                  ? Colors.green
+                                                  : Colors.red,
                                 border: Border.all(
                                     color:
-                                        state.status == ValidationStatus.Waiting
-                                            ? Colors.blue
-                                            : state.status ==
-                                                    ValidationStatus.Loading
-                                                ? Colors.blue
-                                                : state.status ==
-                                                        ValidationStatus.Success
-                                                    ? Colors.black
-                                                    : Colors.black,
+                                    state.status == ValidationStatus.Waiting
+                                        ? Colors.blue
+                                        : state.status ==
+                                        ValidationStatus.Loading
+                                        ? Colors.blue
+                                        : state.status ==
+                                        ValidationStatus.Success
+                                        ? Colors.black
+                                        : Colors.black,
                                     width: 2),
                                 borderRadius: BorderRadius.circular(30)),
                             width: state.status == ValidationStatus.Waiting
                                 ? 200
                                 : state.status == ValidationStatus.Loading
-                                    ? 50
-                                    : state.status == ValidationStatus.Success
-                                        ? 200
-                                        : 200,
+                                ? 50
+                                : state.status == ValidationStatus.Success
+                                ? 200
+                                : 200,
                             height: 50,
                             duration: Duration(milliseconds: 200),
                             child: Center(
@@ -109,21 +131,21 @@ class _BottomSheetTicketState extends State<BottomSheetTicket> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: state.status == ValidationStatus.Waiting
                                     ? Text(
-                                        "Click To Validate",
-                                        style: buttonTextStyle,
-                                      )
+                                  "Click To Validate",
+                                  style: buttonTextStyle,
+                                )
                                     : state.status == ValidationStatus.Loading
-                                        ? CircularProgressIndicator()
-                                        : state.status ==
-                                                ValidationStatus.Success
-                                            ? Text(
-                                                "Success",
-                                                style: buttonTextStyle,
-                                              )
-                                            : Text(
-                                                "Failure",
-                                                style: buttonTextStyle,
-                                              ),
+                                    ? CircularProgressIndicator()
+                                    : state.status ==
+                                    ValidationStatus.Success
+                                    ? Text(
+                                  "Success",
+                                  style: buttonTextStyle,
+                                )
+                                    : Text(
+                                  "Failure",
+                                  style: buttonTextStyle,
+                                ),
                               ),
                             ),
                           ),
