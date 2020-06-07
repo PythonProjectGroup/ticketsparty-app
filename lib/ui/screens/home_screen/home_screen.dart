@@ -43,9 +43,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffold,
-      appBar: AppBar(title: Text("Home Screen"),
+      appBar: AppBar(
+        title: Text("Ekran Główny"),
         centerTitle: true,
-        backgroundColor: Colors.black87,),
+        backgroundColor: Colors.black87,
+      ),
       drawer: Drawer(
         child: Container(
           color: Colors.black87,
@@ -74,7 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Joachim Schmidt",
+                              "Witaj użytkownik!",
                               style:
                               TextStyle(color: Colors.white, fontSize: 20),
                             ),
@@ -112,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   ),
                                   Text(
-                                    "Add Event",
+                                    "Dodaj Event",
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 20),
                                   ),
@@ -133,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 30.0),
                       child: Text(
-                        "Logout",
+                        "Wyloguj się",
                         style: TextStyle(color: Colors.grey[100], fontSize: 20),
                       ),
                     ),
@@ -144,16 +146,29 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.black87,
-        onPressed: addKey,
-        child: Icon(Icons.add),
+      floatingActionButton: Hero(
+        tag: "fab",
+        child: RaisedButton.icon(
+          textColor: Colors.white,
+          color: Colors.black87,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(90)),
+          onPressed: addKey,
+          label: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text("Dodaj event", style: TextStyle(fontSize: 20),),
+          ),
+          icon: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 13),
+            child: Icon(Icons.add, size: 30,),
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: events.length == 0
             ? Center(
-          child: Text("Press + to add event"),
+          child: Text("Naciśnij + aby dodać event"),
         )
             : ListView.builder(
             itemCount: events.length,

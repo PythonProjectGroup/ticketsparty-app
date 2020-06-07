@@ -55,7 +55,7 @@ class ServerConnector {
       AuthenticationBloc authBloc) async {
     String token = await UserRepository.getToken();
     final uri = Uri.http(serverUrl, request);
-    print("chce itemy oto mój token: $token");
+    print(uri);
     var response = await http.post(
       uri,
       headers: {

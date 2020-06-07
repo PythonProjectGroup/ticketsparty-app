@@ -63,31 +63,44 @@ class _EventScreenState extends State<EventScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffold,
-      appBar: AppBar(title: Text("Event"),
+      appBar: AppBar(
+        title: Text("Event"),
         centerTitle: true,
-        backgroundColor: Colors.black87,),
-      floatingActionButton: RaisedButton(
-        textColor: Colors.white,
-        color: Colors.black87,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
-        onPressed: proceedToValidation,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            "VALIDATE",
-            style: TextStyle(fontSize: 25, fontWeight: FontWeight.w400),
+        backgroundColor: Colors.black87,
+      ),
+      floatingActionButton: Hero(
+        tag: "fab",
+        child: RaisedButton.icon(
+          textColor: Colors.white,
+          color: Colors.black87,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(90)),
+          onPressed: proceedToValidation,
+          label: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              "Skanuj bilety",
+              style: TextStyle(fontSize: 20),
+            ),
+          ),
+          icon: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 13),
+            child: Icon(
+              Icons.search,
+              size: 30,
+            ),
           ),
         ),
       ),
       body: SafeArea(
         child: isLoaded
             ? SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
                   child: Text(
                     event.name,
                     style: TextStyle(

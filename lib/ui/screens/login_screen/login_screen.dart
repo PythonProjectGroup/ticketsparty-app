@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ticketspartyapp/blocs/authentication_bloc/authentication_bloc.dart';
-import 'package:ticketspartyapp/blocs/authentication_bloc/authentication_state.dart';
+import 'package:ticketspartyapp/blocs/authentication_bloc/bloc.dart';
 import 'package:ticketspartyapp/blocs/login_bloc/bloc.dart';
+import 'package:ticketspartyapp/ui/screens/register_screen/register_screen.dart';
 import 'package:ticketspartyapp/ui/shared_widgets/text_form_input.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -47,81 +47,183 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.only(top: 10, bottom: 10),
-        child: MultiBlocListener(
-          listeners: [
-            BlocListener<LoginBloc, LoginState>(
-              bloc: loginBloc,
-              listener: (BuildContext context, state) {
-                if (state is ErrorLogin) {
-                  print("DIALOG");
-                  showDialog(
-                      context: context,
-                      builder: (context) => new AlertDialog(
-                            title: new Text('Login error'),
-                            content: new Text(state.reason),
-                            actions: <Widget>[
-                              new GestureDetector(
-                                onTap: () => Navigator.of(context).pop(false),
-                                child: Text("OK"),
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<LoginBloc, LoginState>(
+          bloc: loginBloc,
+          listener: (BuildContext context, state) {
+            if (state is ErrorLogin) {
+              showDialog(
+                  context: context,
+                  builder: (context) => new AlertDialog(
+                        title: new Text('Login error'),
+                        content: new Text(state.reason),
+                        actions: <Widget>[
+                          new GestureDetector(
+                            onTap: () => Navigator.of(context).pop(false),
+                            child: Text("OK"),
+                          ),
+                        ],
+                      ));
+            }
+          },
+        ),
+        BlocListener<AuthenticationBloc, AuthenticationState>(
+          bloc: BlocProvider.of<AuthenticationBloc>(context),
+          listener: (BuildContext context, state) {
+            if (state is AuthenticationAuthenticated ||
+                state is AuthenticationNotPossible) {
+              Navigator.of(context).pop();
+            }
+          },
+        )
+      ],
+      child: Scaffold(
+        body: SafeArea(
+          child: Container(
+            decoration: BoxDecoration(),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 10, bottom: 10),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(30.0),
+                    child: Column(
+                      children: [
+                        Hero(
+                          tag: "main_text",
+                          child: Material(
+                            type: MaterialType.transparency,
+                            child: Text(
+                              "Zaloguj się",
+                              style: TextStyle(
+                                  fontSize: 40, fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Hero(
+                            tag: "second_text",
+                            child: Material(
+                              type: MaterialType.transparency,
+                              child: Text(
+                                "Logowanie do aplikacji",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 15, color: Colors.grey.shade600),
                               ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Form(
+                    key: formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        TextFormInput(
+                          controller: _emailController,
+                          name: "login",
+                          obscure: false,
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Please enter login';
+                            }
+                            return null;
+                          },
+                        ),
+                        TextFormInput(
+                            controller: _passwordController,
+                            name: "hasło",
+                            obscure: true,
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Please enter password';
+                              }
+                              return null;
+                            }),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 40),
+                    child: Column(
+                      children: [
+                        BlocBuilder<LoginBloc, LoginState>(
+                          bloc: loginBloc,
+                          builder: (BuildContext context, state) {
+                            if (state is LoadingLogin) {
+                              return CircularProgressIndicator();
+                            } else {
+                              return Hero(
+                                tag: "login_button",
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 20, horizontal: 40),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Container(
+                                          height: 60,
+                                          child: RaisedButton(
+                                            color: Colors.black,
+                                            textColor: Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(5)),
+                                            onPressed: trySubmit,
+                                            child: Text(
+                                              "Zaloguj się",
+                                              style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.w400),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 48),
+                          child: Row(
+                            children: [
+                              Text("Nie masz konta?"),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                  onTap: () => {
+                                    print("Jednak nei mam konta"),
+                                    Navigator.pop(context),
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              RegisterScreen()),
+                                    ),
+                                  },
+                                  child: Text(
+                                    "Zarejestruj się",
+                                    style: TextStyle(color: Colors.blue),
+                                  ),
+                                ),
+                              )
                             ],
-                          ));
-                }
-              },
-            ),
-            BlocListener<AuthenticationBloc, AuthenticationState>(
-              bloc: BlocProvider.of<AuthenticationBloc>(context),
-              listener: (BuildContext context, state) {
-                if (state is AuthenticationAuthenticated ||
-                    state is AuthenticationNotPossible) {
-                  Navigator.of(context).pop();
-                }
-              },
-            )
-          ],
-          child: Form(
-            key: formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                TextFormInput(
-                  controller: _emailController,
-                  name: "login",
-                  obscure: false,
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter login';
-                    }
-                    return null;
-                  },
-                ),
-                TextFormInput(
-                    controller: _passwordController,
-                    name: "hasło",
-                    obscure: true,
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Please enter password';
-                      }
-                      return null;
-                    }),
-                BlocBuilder<LoginBloc, LoginState>(
-                  bloc: loginBloc,
-                  builder: (BuildContext context, state) {
-                    if (state is LoadingLogin) {
-                      return CircularProgressIndicator();
-                    } else {
-                      return RaisedButton(
-                        onPressed: trySubmit,
-                        child: Text("login"),
-                      );
-                    }
-                  },
-                )
-              ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),
