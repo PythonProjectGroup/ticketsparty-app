@@ -56,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
               showDialog(
                   context: context,
                   builder: (context) => new AlertDialog(
-                        title: new Text('Login error'),
+                        title: new Text('Błąd logowania'),
                         content: new Text(state.reason),
                         actions: <Widget>[
                           new GestureDetector(
@@ -128,7 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           obscure: false,
                           validator: (value) {
                             if (value.isEmpty) {
-                              return 'Please enter login';
+                              return 'Proszę podaj email';
                             }
                             return null;
                           },
@@ -139,7 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             obscure: true,
                             validator: (value) {
                               if (value.isEmpty) {
-                                return 'Please enter password';
+                                return 'Proszę podaj hasło';
                               }
                               return null;
                             }),
@@ -196,7 +196,6 @@ class _LoginScreenState extends State<LoginScreen> {
                               padding: const EdgeInsets.all(8.0),
                               child: GestureDetector(
                                 onTap: () => {
-                                  print("Jednak nei mam konta"),
                                   Navigator.pop(context),
                                   Navigator.push(
                                     context,

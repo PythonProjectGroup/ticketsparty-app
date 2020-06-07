@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ticketspartyapp/blocs/home_screen_bloc/home_screen_bloc.dart';
 import 'package:ticketspartyapp/ui/screens/home_screen/home_screen.dart';
 import 'package:ticketspartyapp/ui/screens/no_connection_screen/no_connection_screen.dart';
 import 'package:ticketspartyapp/ui/screens/welcome_screen.dart';
@@ -51,10 +50,7 @@ class App extends StatelessWidget {
             return SplashScreen();
           }
           if (state is AuthenticationAuthenticated) {
-            print("Przechodzę do home");
-            return BlocProvider(
-                create: (BuildContext context) => HomeScreenBloc(),
-                child: HomeScreen());
+            return HomeScreen();
           }
           if (state is AuthenticationUnauthenticated) {
             return WelcomeScreen();

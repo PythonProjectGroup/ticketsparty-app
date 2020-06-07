@@ -48,7 +48,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   @override
   Future<void> close() {
-    print("ZAMYKAM LOGOWANIE DOWIDZENIA");
     return super.close();
   }
 }

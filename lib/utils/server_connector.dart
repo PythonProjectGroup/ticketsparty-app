@@ -9,7 +9,8 @@ class ServerConnector {
   static Future getFromServer(
       String request, AuthenticationBloc authBloc) async {
     String token = await UserRepository.getToken();
-    final uri = Uri.http(serverUrl, request);
+    final uri = Uri.https(serverUrl, request);
+    print(uri);
     print("chce itemy oto mój token: $token");
     var response = await http.get(
       uri,
@@ -54,7 +55,7 @@ class ServerConnector {
   static Future postToServer(String request,
       AuthenticationBloc authBloc) async {
     String token = await UserRepository.getToken();
-    final uri = Uri.http(serverUrl, request);
+    final uri = Uri.https(serverUrl, request);
     print(uri);
     var response = await http.post(
       uri,
@@ -97,7 +98,7 @@ class ServerConnector {
   static Future patchToServer(String request,
       AuthenticationBloc authBloc) async {
     String token = await UserRepository.getToken();
-    final uri = Uri.http(serverUrl, request);
+    final uri = Uri.https(serverUrl, request);
     print("chce itemy oto mój token: $token");
     var response = await http.patch(
       uri,

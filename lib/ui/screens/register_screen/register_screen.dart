@@ -65,7 +65,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               showDialog(
                   context: context,
                   builder: (context) => new AlertDialog(
-                        title: new Text('Login error'),
+                        title: new Text('Błąd rejestracji'),
                         content: new Text(state.reason),
                         actions: <Widget>[
                           new GestureDetector(
@@ -135,11 +135,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       obscure: false,
                       validator: (value) {
                         if (value.isEmpty) {
-                          return 'I gdzie mam Ci niby spam wysyłać';
+                          return 'I gdzie niby spam wysyłać';
                         }
                         if (!Validators.isValidEmail(
                             value.toString().trim())) {
-                          return "emaila na oczy chyba żeś nie widział";
+                          return "Tak nie wygląda poprawny email";
                         }
                         return null;
                       },
@@ -150,11 +150,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       obscure: true,
                       validator: (value) {
                         if (value.isEmpty) {
-                          return 'o czymś zapomniałeś';
+                          return 'Podaj hasło';
                         }
 
                         if (Validators.isValidPassword(value)) {
-                          return "Brutforcem w 5 minut";
+                          return "Hasło za proste";
                         }
                         return null;
                       },
@@ -165,10 +165,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       obscure: true,
                       validator: (value) {
                         if (value.isEmpty) {
-                          return 'A jak machnąłeś literówkę? weź sprawdź';
+                          return 'Potwierdź hasło';
                         }
                         if (value != _passwordController.text) {
-                          return "Różne wpisałeś ";
+                          return "Różne te hasła ";
                         }
                         return null;
                       },

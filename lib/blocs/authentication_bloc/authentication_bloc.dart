@@ -16,8 +16,6 @@ class AuthenticationBloc
     if (event is AppStarted) {
       try {
         final String token = await UserRepository.getTokenAndVerify();
-        print(token);
-        print("Nie wysypało się dziwne");
         if (token != null) {
           yield AuthenticationAuthenticated(authToken: token);
         } else {
@@ -42,7 +40,6 @@ class AuthenticationBloc
       yield AuthenticationUnauthenticated();
     }
     if (event is TokenRenewed) {
-      print("auth robi stan renewenened");
       yield new AuthenticationAuthenticated(authToken: event.token);
     }
     if (event is LostAuthentication) {

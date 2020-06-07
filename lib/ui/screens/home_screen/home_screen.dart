@@ -15,6 +15,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<Event> events = List<Event>();
+  String username = "";
   GlobalKey<ScaffoldState> scaffold = GlobalKey<ScaffoldState>();
 
   Future loadEvents() async {
@@ -25,9 +26,18 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  Future loadUsername() async {
+    var name = await DataRepository.getUsername(
+        authenticationBloc: BlocProvider.of<AuthenticationBloc>(context));
+    setState(() {
+      username = name;
+    });
+  }
+
   @override
   void initState() {
     loadEvents();
+    loadUsername();
     super.initState();
   }
 
@@ -76,9 +86,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Witaj użytkownik!",
+                              "Witaj $username!",
                               style:
-                              TextStyle(color: Colors.white, fontSize: 20),
+                                  TextStyle(color: Colors.white, fontSize: 20),
                             ),
                             GestureDetector(
                               onTap: () => Navigator.pop(context),

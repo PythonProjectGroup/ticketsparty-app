@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:ticketspartyapp/constraints.dart';
 import 'package:ticketspartyapp/models/event.dart';
 import 'package:ticketspartyapp/ui/screens/event_screen/event_screen.dart';
 
@@ -28,7 +29,8 @@ class EventTile extends StatelessWidget {
           height: 50,
           decoration: BoxDecoration(
             image: DecorationImage(
-                image: NetworkImage(event.pictures[0]), fit: BoxFit.cover),
+                image: NetworkImage("https://" + serverUrl + event.pictures[0]),
+                fit: BoxFit.cover),
           ),
         ),
         trailing: Text(

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ticketspartyapp/blocs/authentication_bloc/authentication_bloc.dart';
 import 'package:ticketspartyapp/blocs/validation_bloc/validation_bloc.dart';
 import 'package:ticketspartyapp/blocs/validation_screen_bloc/validation_screen_bloc.dart';
+import 'package:ticketspartyapp/constraints.dart';
 import 'package:ticketspartyapp/models/event.dart';
 import 'package:ticketspartyapp/ui/screens/validation_screen/validation_screen.dart';
 import 'package:ticketspartyapp/utils/data_repository.dart';
@@ -117,8 +118,10 @@ class _EventScreenState extends State<EventScreen> {
                   itemCount: event.pictures.length,
                   itemBuilder: (BuildContext context, int itemIndex) =>
                       Container(
-                        child: Image.network(event.pictures[itemIndex]),
-                      ),
+                        child: Image.network("https://" +
+                              serverUrl +
+                              event.pictures[itemIndex]),
+                        ),
                   options: CarouselOptions(
                     enableInfiniteScroll: false,
                     autoPlay: true,

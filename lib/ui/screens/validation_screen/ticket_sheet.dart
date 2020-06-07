@@ -65,25 +65,22 @@ class _BottomSheetTicketState extends State<BottomSheetTicket> {
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Text(
-                              "Name: ${state.ticket.personName}",
-                              style: TextStyle(fontSize: 20),
-                            ),
-                            Text(
-                              "Number of people: ${state.ticket.numberOfPeople.toString()}",
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ],
-                        ),
+                      Text(
+                        "Imię: ${state.ticket.personName}",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Text(
+                            "Liczba osób: ${state.ticket.numberOfPeople.toString()}",
+                            style: TextStyle(fontSize: 20),
+                          ),
+                        ],
                       ),
                       state.ticket.used
                           ? Text(
-                              "This ticket is already used!",
+                              "Ten bilet już został zużyty!",
                               style: TextStyle(
                                   fontSize: 20,
                                   color: Colors.red,
@@ -131,7 +128,7 @@ class _BottomSheetTicketState extends State<BottomSheetTicket> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: state.status == ValidationStatus.Waiting
                                     ? Text(
-                                  "Click To Validate",
+                                  "Naciśnij aby skasować",
                                   style: buttonTextStyle,
                                 )
                                     : state.status == ValidationStatus.Loading

@@ -25,7 +25,7 @@ class DataRepository {
         );
       }).toList();
       List<Event> allEvents =
-      await getEvents(authenticationBloc: authenticationBloc);
+          await getEvents(authenticationBloc: authenticationBloc);
       List<Event> finalEvents = List<Event>();
       for (Event event in allEvents) {
         for (Event eventWithKey in eventsWithKey) {
@@ -145,6 +145,20 @@ class DataRepository {
     } else {
       print(response.body);
       throw Exception('error loading all events');
+    }
+  }
+
+  static Future<String> getUsername(
+      {@required AuthenticationBloc authenticationBloc}) async {
+    String url = "/api/username";
+    var response = await ServerConnector.getFromServer(url, authenticationBloc);
+    if (response.statusCode == 200) {
+      final data = json.decode(utf8.decode(response.bodyBytes));
+      print(data);
+      return data["name"];
+    } else {
+      print(response.body);
+      return "Nieznany żołnierz";
     }
   }
 }

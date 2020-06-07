@@ -1,1 +1,1 @@
-String serverUrl = '192.168.1.8:5555';
+String serverUrl = 'ticketsparty.jschmidt.pl';
