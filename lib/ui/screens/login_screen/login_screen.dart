@@ -85,40 +85,37 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Padding(
               padding: const EdgeInsets.only(top: 10, bottom: 10),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(30.0),
-                    child: Column(
-                      children: [
-                        Hero(
-                          tag: "main_text",
+                  Column(
+                    children: [
+                      Hero(
+                        tag: "main_text",
+                        child: Material(
+                          type: MaterialType.transparency,
+                          child: Text(
+                            "Zaloguj się",
+                            style: TextStyle(
+                                fontSize: 40, fontWeight: FontWeight.w700),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: Hero(
+                          tag: "second_text",
                           child: Material(
                             type: MaterialType.transparency,
                             child: Text(
-                              "Zaloguj się",
+                              "Logowanie do aplikacji",
+                              textAlign: TextAlign.center,
                               style: TextStyle(
-                                  fontSize: 40, fontWeight: FontWeight.w700),
+                                  fontSize: 15, color: Colors.grey.shade600),
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Hero(
-                            tag: "second_text",
-                            child: Material(
-                              type: MaterialType.transparency,
-                              child: Text(
-                                "Logowanie do aplikacji",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 15, color: Colors.grey.shade600),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                   Form(
                     key: formKey,
@@ -149,78 +146,74 @@ class _LoginScreenState extends State<LoginScreen> {
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 40),
-                    child: Column(
-                      children: [
-                        BlocBuilder<LoginBloc, LoginState>(
-                          bloc: loginBloc,
-                          builder: (BuildContext context, state) {
-                            if (state is LoadingLogin) {
-                              return CircularProgressIndicator();
-                            } else {
-                              return Hero(
-                                tag: "login_button",
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 20, horizontal: 40),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Container(
-                                          height: 60,
-                                          child: RaisedButton(
-                                            color: Colors.black,
-                                            textColor: Colors.white,
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(5)),
-                                            onPressed: trySubmit,
-                                            child: Text(
-                                              "Zaloguj się",
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.w400),
-                                            ),
+                  Column(
+                    children: [
+                      BlocBuilder<LoginBloc, LoginState>(
+                        bloc: loginBloc,
+                        builder: (BuildContext context, state) {
+                          if (state is LoadingLogin) {
+                            return CircularProgressIndicator();
+                          } else {
+                            return Hero(
+                              tag: "login_button",
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 40),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Container(
+                                        height: 60,
+                                        child: RaisedButton(
+                                          color: Colors.black,
+                                          textColor: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5)),
+                                          onPressed: trySubmit,
+                                          child: Text(
+                                            "Zaloguj się",
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w400),
                                           ),
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            }
-                          },
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 48),
-                          child: Row(
-                            children: [
-                              Text("Nie masz konta?"),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: GestureDetector(
-                                  onTap: () => {
-                                    print("Jednak nei mam konta"),
-                                    Navigator.pop(context),
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              RegisterScreen()),
                                     ),
-                                  },
-                                  child: Text(
-                                    "Zarejestruj się",
-                                    style: TextStyle(color: Colors.blue),
-                                  ),
+                                  ],
                                 ),
-                              )
-                            ],
-                          ),
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 40),
+                        child: Row(
+                          children: [
+                            Text("Nie masz konta?"),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: GestureDetector(
+                                onTap: () => {
+                                  print("Jednak nei mam konta"),
+                                  Navigator.pop(context),
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => RegisterScreen()),
+                                  ),
+                                },
+                                child: Text(
+                                  "Zarejestruj się",
+                                  style: TextStyle(color: Colors.blue),
+                                ),
+                              ),
+                            )
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   )
                 ],
               ),

@@ -88,182 +88,177 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ],
       child: Scaffold(
         body: SafeArea(
-          child: Container(
-            decoration: BoxDecoration(),
-            child: Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(30.0),
-                    child: Column(
-                      children: [
-                        Hero(
-                          tag: "main_text",
-                          child: Material(
-                            type: MaterialType.transparency,
-                            child: Text(
-                              "Zarejestruj się",
-                              style: TextStyle(
-                                  fontSize: 40, fontWeight: FontWeight.w700),
-                            ),
-                          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 30.0),
+                child: Column(
+                  children: [
+                    Hero(
+                      tag: "main_text",
+                      child: Material(
+                        type: MaterialType.transparency,
+                        child: Text(
+                          "Zarejestruj się",
+                          style: TextStyle(
+                              fontSize: 40, fontWeight: FontWeight.w700),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Hero(
-                            tag: "second_text",
-                            child: Material(
-                              type: MaterialType.transparency,
-                              child: Text(
-                                "Zarejestruj się, aby móc korzystać z aplikacji",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 15, color: Colors.grey.shade600),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                  Form(
-                    key: _formKey,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        TextFormInput(
-                          controller: _emailController,
-                          name: "email",
-                          obscure: false,
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'I gdzie mam Ci niby spam wysyłać';
-                            }
-                            if (!Validators.isValidEmail(
-                                value.toString().trim())) {
-                              return "emaila na oczy chyba żeś nie widział";
-                            }
-                            return null;
-                          },
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Hero(
+                        tag: "second_text",
+                        child: Material(
+                          type: MaterialType.transparency,
+                          child: Text(
+                            "Zarejestruj się, aby móc korzystać z aplikacji",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 14, color: Colors.grey.shade600),
+                          ),
                         ),
-                        TextFormInput(
-                          name: "hasło",
-                          controller: _passwordController,
-                          obscure: true,
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'o czymś zapomniałeś';
-                            }
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    TextFormInput(
+                      controller: _emailController,
+                      name: "email",
+                      obscure: false,
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'I gdzie mam Ci niby spam wysyłać';
+                        }
+                        if (!Validators.isValidEmail(
+                            value.toString().trim())) {
+                          return "emaila na oczy chyba żeś nie widział";
+                        }
+                        return null;
+                      },
+                    ),
+                    TextFormInput(
+                      name: "hasło",
+                      controller: _passwordController,
+                      obscure: true,
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'o czymś zapomniałeś';
+                        }
 
-                            if (Validators.isValidPassword(value)) {
-                              return "Brutforcem w 5 minut";
-                            }
-                            return null;
-                          },
-                        ),
-                        TextFormInput(
-                          name: "potwierdź hasło",
-                          controller: _repeatPasswordController,
-                          obscure: true,
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'A jak machnąłeś literówkę? weź sprawdź';
-                            }
-                            if (value != _passwordController.text) {
-                              return "Różne wpisałeś ";
-                            }
-                            return null;
-                          },
-                        ),
-                        TextFormInput(
-                          name: "imię i nazwisko",
-                          controller: _nameController,
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Na kogo wypisać fakturkę?';
-                            }
-                            return null;
-                          },
-                        ),
-                      ],
+                        if (Validators.isValidPassword(value)) {
+                          return "Brutforcem w 5 minut";
+                        }
+                        return null;
+                      },
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 40),
-                    child: Column(
-                      children: [
-                        BlocBuilder<RegisterBloc, RegisterState>(
-                          bloc: registerBloc,
-                          builder: (BuildContext context, state) {
-                            if (state is LoadingRegister) {
-                              return CircularProgressIndicator();
-                            } else {
-                              return Hero(
-                                tag: "register_button",
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 20, horizontal: 40),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Container(
-                                          height: 60,
-                                          child: RaisedButton(
-                                            color: Colors.black,
-                                            textColor: Colors.white,
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(5)),
-                                            onPressed: trySubmit,
-                                            child: Text(
-                                              "Zarejestruj się",
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.w400),
-                                            ),
-                                          ),
+                    TextFormInput(
+                      name: "potwierdź hasło",
+                      controller: _repeatPasswordController,
+                      obscure: true,
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'A jak machnąłeś literówkę? weź sprawdź';
+                        }
+                        if (value != _passwordController.text) {
+                          return "Różne wpisałeś ";
+                        }
+                        return null;
+                      },
+                    ),
+                    TextFormInput(
+                      name: "imię i nazwisko",
+                      controller: _nameController,
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Na kogo wypisać fakturkę?';
+                        }
+                        return null;
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 0),
+                child: Column(
+                  children: [
+                    BlocBuilder<RegisterBloc, RegisterState>(
+                      bloc: registerBloc,
+                      builder: (BuildContext context, state) {
+                        if (state is LoadingRegister) {
+                          return CircularProgressIndicator();
+                        } else {
+                          return Hero(
+                            tag: "register_button",
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 0, horizontal: 40),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      height: 60,
+                                      child: RaisedButton(
+                                        color: Colors.black,
+                                        textColor: Colors.white,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                            BorderRadius.circular(5)),
+                                        onPressed: trySubmit,
+                                        child: Text(
+                                          "Zarejestruj się",
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w400),
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            }
-                          },
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 48),
-                          child: Row(
-                            children: [
-                              Text("Masz już konto?"),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: GestureDetector(
-                                  onTap: () => {
-                                    Navigator.pop(context),
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => LoginScreen()),
                                     ),
-                                  },
-                                  child: Text(
-                                    "Zaloguj się",
-                                    style: TextStyle(color: Colors.blue),
                                   ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
+                                ],
+                              ),
+                            ),
+                          );
+                        }
+                      },
                     ),
-                  )
-                ],
-              ),
-            ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 40),
+                      child: Row(
+                        children: [
+                          Text("Masz już konto?"),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: GestureDetector(
+                              onTap: () =>
+                              {
+                                Navigator.pop(context),
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => LoginScreen()),
+                                ),
+                              },
+                              child: Text(
+                                "Zaloguj się",
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
           ),
         ),
       ),
