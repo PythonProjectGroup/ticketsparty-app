@@ -112,7 +112,7 @@ class DataRepository {
           id: data["id"],
           name: data["event_name"],
           description: data["descriptions"],
-          pictureUrl: data["pictures"],
+          pictures: jsonDecode(data["pictures"]),
           city: data["city"]);
     } else {
       print(response.body);
@@ -134,7 +134,7 @@ class DataRepository {
             name: rawPost["event_name"],
             description: rawPost["descriptions"],
             date: DateTime.parse(rawPost["event_date"]),
-            pictureUrl: rawPost["pictures"],
+            pictures: jsonDecode(rawPost["pictures"]),
             city: rawPost["city"]);
       }).toList();
       List<Event> finalEvents = List<Event>();

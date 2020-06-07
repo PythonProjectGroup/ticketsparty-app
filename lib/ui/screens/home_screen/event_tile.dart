@@ -28,9 +28,7 @@ class EventTile extends StatelessWidget {
           height: 50,
           decoration: BoxDecoration(
             image: DecorationImage(
-                image: NetworkImage(event.pictureUrl),
-                fit: BoxFit.cover
-            ),
+                image: NetworkImage(event.pictures[0]), fit: BoxFit.cover),
           ),
         ),
         trailing: Text(

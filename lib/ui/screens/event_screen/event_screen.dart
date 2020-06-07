@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,7 +21,8 @@ class EventScreen extends StatefulWidget {
 class _EventScreenState extends State<EventScreen> {
   Event event;
   bool isLoaded = false;
-  GlobalKey <ScaffoldState> scaffold = GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldState> scaffold = GlobalKey<ScaffoldState>();
+
   Future getEventInfo() async {
     event = await DataRepository.getEvent(
         authenticationBloc: BlocProvider.of<AuthenticationBloc>(context),
@@ -40,21 +42,18 @@ class _EventScreenState extends State<EventScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            MultiBlocProvider(
-              providers: [
-                BlocProvider<ValidationBloc>(
-                  create: (BuildContext context) =>
-                      ValidationBloc(
-                          BlocProvider.of<AuthenticationBloc>(context),
-                          event.id),
-                ),
-                BlocProvider<ValidationScreenBloc>(
-                  create: (BuildContext context) => ValidationScreenBloc(),
-                ),
-              ],
-              child: ValidationScreen(),
+        builder: (context) => MultiBlocProvider(
+          providers: [
+            BlocProvider<ValidationBloc>(
+              create: (BuildContext context) => ValidationBloc(
+                  BlocProvider.of<AuthenticationBloc>(context), event.id),
             ),
+            BlocProvider<ValidationScreenBloc>(
+              create: (BuildContext context) => ValidationScreenBloc(),
+            ),
+          ],
+          child: ValidationScreen(),
+        ),
       ),
     );
   }
@@ -74,7 +73,7 @@ class _EventScreenState extends State<EventScreen> {
           textColor: Colors.white,
           color: Colors.black87,
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(90)),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(90)),
           onPressed: proceedToValidation,
           label: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -95,12 +94,12 @@ class _EventScreenState extends State<EventScreen> {
       body: SafeArea(
         child: isLoaded
             ? SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
                   child: Text(
                     event.name,
                     style: TextStyle(
@@ -110,9 +109,25 @@ class _EventScreenState extends State<EventScreen> {
                 Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Text(
-                    event.description, style: TextStyle(fontSize: 16),),
+                    event.description,
+                    style: TextStyle(fontSize: 16),
+                  ),
                 ),
-                Image.network(event.pictureUrl)
+                CarouselSlider.builder(
+                  itemCount: event.pictures.length,
+                  itemBuilder: (BuildContext context, int itemIndex) =>
+                      Container(
+                        child: Image.network(event.pictures[itemIndex]),
+                      ),
+                  options: CarouselOptions(
+                    enableInfiniteScroll: false,
+                    autoPlay: true,
+                    enlargeCenterPage: true,
+                    viewportFraction: 0.8,
+                    aspectRatio: 2.0,
+                    initialPage: 0,
+                  ),
+                ),
               ],
             ),
           ),
