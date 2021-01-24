@@ -1,5 +1,5 @@
 ## Tickets Party Mobile APP
-Provides an easy way of ticket validation for events
+Provides an easy way of ticket validation for event organizators
 
 Features:
 - JWT authorization with automatic token refresh
